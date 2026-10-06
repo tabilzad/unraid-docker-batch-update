@@ -64,7 +64,7 @@ build.sh                              builds archive/<name>-<version>-noarch-1.t
 dev-deploy.sh                         copies src/ into the running web UI for quick testing (RAM only)
 ```
 
-Quick test on an Unraid box: `./dev-deploy.sh`, then reload the Docker page. Undo with `./dev-deploy.sh --remove`.
+Quick test on an Unraid box: `./dev-deploy.sh`, then reload the Docker page. Undo with `./dev-deploy.sh --remove`. This is only for a copy deployed by the script: if the plugin was installed from the Plugins page, remove it there (or with `plugin remove docker.batch.update.plg`). The script refuses to run while a real install is present.
 
 ### Releasing
 
