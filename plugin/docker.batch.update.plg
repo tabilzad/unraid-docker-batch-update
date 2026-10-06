@@ -1,0 +1,62 @@
+<?xml version='1.0' standalone='yes'?>
+<!DOCTYPE PLUGIN [
+<!ENTITY name      "docker.batch.update">
+<!ENTITY author    "tabilzad">
+<!ENTITY version   "2026.10.06">
+<!ENTITY md5       "ff5caa22efa9a196015558edb7d53805">
+<!ENTITY launch    "Docker">
+<!ENTITY repo      "tabilzad/unraid-docker-batch-update">
+<!ENTITY branch    "main">
+<!ENTITY gitURL    "https://raw.githubusercontent.com/&repo;/&branch;">
+<!ENTITY pluginURL "&gitURL;/plugin/&name;.plg">
+<!ENTITY pkgName   "&name;-&version;-noarch-1">
+<!ENTITY plgPATH   "/boot/config/plugins/&name;">
+<!ENTITY emhttp    "/usr/local/emhttp/plugins/&name;">
+]>
+
+<PLUGIN name="&name;"
+        author="&author;"
+        version="&version;"
+        launch="&launch;"
+        pluginURL="&pluginURL;"
+        support="https://github.com/&repo;/issues"
+        icon="&name;.png"
+        min="7.0.0">
+
+<CHANGES>
+###2026.10.06
+- Initial release
+- New "Batch Update" tab on the Docker page
+- Select any number of containers with a pending update and update them one after another
+</CHANGES>
+
+<!-- Package (cached on the flash drive so it reinstalls offline at boot) -->
+<FILE Name="&plgPATH;/&pkgName;.txz" Run="upgradepkg --install-new">
+<URL>&gitURL;/archive/&pkgName;.txz</URL>
+<MD5>&md5;</MD5>
+</FILE>
+
+<!-- Post install: drop older cached packages -->
+<FILE Run="/bin/bash">
+<INLINE>
+find "&plgPATH;" -maxdepth 1 -name "&name;-*.txz" ! -name "&pkgName;.txz" -delete
+echo ""
+echo "----------------------------------------------------"
+echo " &name; has been installed."
+echo " Version: &version;"
+echo " Open Docker > Batch Update to use it."
+echo "----------------------------------------------------"
+echo ""
+</INLINE>
+</FILE>
+
+<!-- Remove -->
+<FILE Run="/bin/bash" Method="remove">
+<INLINE>
+removepkg "&pkgName;"
+rm -rf "&emhttp;" "&plgPATH;"
+echo "&name; has been removed."
+</INLINE>
+</FILE>
+
+</PLUGIN>

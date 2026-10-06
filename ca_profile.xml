@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<Maintainer>
+  <Profile>Unraid plugins by tabilzad.</Profile>
+  <Icon>https://raw.githubusercontent.com/tabilzad/unraid-docker-batch-update/main/src/usr/local/emhttp/plugins/docker.batch.update/images/docker.batch.update.png</Icon>
+  <WebPage>https://github.com/tabilzad</WebPage>
+</Maintainer>

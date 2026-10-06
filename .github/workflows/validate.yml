@@ -1,0 +1,40 @@
+name: Validate
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install tools
+        run: sudo apt-get update && sudo apt-get install -y libxml2-utils php-cli
+
+      - name: Lint PHP
+        run: find src -name '*.php' -print0 | xargs -0 -n1 php -l
+
+      - name: Lint JavaScript
+        run: find src -name '*.js' -print0 | xargs -0 -n1 node --check
+
+      - name: Validate XML
+        run: xmllint --noout plugin/*.plg templates/*.xml ca_profile.xml
+
+      - name: Package referenced by the .plg exists and its MD5 matches
+        run: |
+          plg=plugin/docker.batch.update.plg
+          version=$(sed -nE 's/.*<!ENTITY version +"([^"]+)".*/\1/p' "$plg")
+          md5=$(sed -nE 's/.*<!ENTITY md5 +"([^"]+)".*/\1/p' "$plg")
+          pkg="archive/docker.batch.update-$version-noarch-1.txz"
+          test -f "$pkg" || { echo "::error::$pkg missing - run ./build.sh"; exit 1; }
+          actual=$(md5sum "$pkg" | cut -d' ' -f1)
+          [ "$actual" = "$md5" ] || { echo "::error::MD5 mismatch: plg=$md5 actual=$actual - run ./build.sh"; exit 1; }
+          grep -q "^###$version" "$plg" || { echo "::error::No <CHANGES> entry for $version"; exit 1; }
+
+      - name: Package contents match src/
+        run: |
+          pkg=$(ls archive/docker.batch.update-*-noarch-1.txz | sort | tail -1)
+          diff <(tar -tJf "$pkg" | grep -v '/$' | sed 's|^\./||' | grep -v '^install/' | sort) \
+               <(cd src && find . -type f | sed 's|^\./||' | sort)

@@ -1,0 +1,71 @@
+Menu="Docker:2"
+Title="Batch Update"
+Tag="cloud-download"
+Cond="is_file('/var/run/dockerd.pid')"
+Markdown="false"
+---
+<?PHP
+/* Docker Batch Update
+ *
+ * Select any number of containers with a pending update and update them
+ * one after another using the stock Unraid update routine (update_container).
+ */
+?>
+<link type="text/css" rel="stylesheet" href="<?autov('/plugins/docker.batch.update/sheets/batch.css')?>">
+
+<div id="dbu">
+  <div class="dbu-toolbar">
+    <span class="dbu-summary" id="dbu-summary">_(Loading)_...</span>
+    <label class="dbu-toggle"><input type="checkbox" id="dbu-showall"> _(Show all containers)_</label>
+  </div>
+
+  <table class="dbu-table" id="dbu-table">
+    <thead>
+      <tr>
+        <th class="dbu-check"><input type="checkbox" id="dbu-checkall" title="_(Select all)_"></th>
+        <th class="dbu-order">#</th>
+        <th>_(Container)_</th>
+        <th>_(Image)_</th>
+        <th>_(Update)_</th>
+        <th>_(State)_</th>
+        <th class="dbu-digest">_(Local)_ &rarr; _(Remote)_</th>
+      </tr>
+    </thead>
+    <tbody id="dbu-list"><tr><td colspan="7" class="dbu-empty"><i class="fa fa-spinner fa-spin"></i> _(Loading)_...</td></tr></tbody>
+  </table>
+
+  <div class="dbu-actions">
+    <input type="button" id="dbu-check" value="_(Check for Updates)_">
+    <input type="button" id="dbu-update" value="_(Update Selected)_" disabled>
+  </div>
+  <p class="dbu-note">
+    _(Selected containers are updated one at a time, in the order shown, which is the same order as the Docker Containers page. Each one is pulled, stopped, recreated and restarted only if it was running before, exactly as the built-in update does)_.
+  </p>
+</div>
+
+<script>
+var dbuText = {
+  loading: "_(Loading)_",
+  available: "_(Update available)_",
+  current: "_(Up-to-date)_",
+  unknown: "_(Not checked)_",
+  rebuild: "_(Rebuild ready)_",
+  running: "_(Started)_",
+  stopped: "_(Stopped)_",
+  paused: "_(Paused)_",
+  none: "_(No containers have an update available)_",
+  noContainers: "_(No containers found)_",
+  summary: "_(containers with an update available)_",
+  selected: "_(selected)_",
+  updateSelected: "_(Update Selected)_",
+  confirmTitle: "_(Update selected containers?)_",
+  confirmText: "_(The following containers will be updated one after another, in this order)_",
+  confirmButton: "_(Yes, update them)_",
+  cancel: "_(Cancel)_",
+  progressTitle: "_(Updating selected containers)_",
+  checking: "_(Checking for updates)_",
+  busy: "_(An update is already running. Wait for it to finish and try again)_",
+  error: "_(Could not load the container list)_"
+};
+</script>
+<script src="<?autov('/plugins/docker.batch.update/javascript/batch.js')?>"></script>
