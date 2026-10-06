@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<Maintainer>
-  <Profile>Unraid plugins by tabilzad.</Profile>
+<CommunityApplications>
+  <Profile>Unraid plugins by tabilzad. This repository publishes **Docker Batch Update**, which adds a Batch Update tab to the Docker page for updating several selected containers in one go. Report problems or ask questions on GitHub: https://github.com/tabilzad/unraid-docker-batch-update/issues</Profile>
   <Icon>https://raw.githubusercontent.com/tabilzad/unraid-docker-batch-update/main/src/usr/local/emhttp/plugins/docker.batch.update/images/docker.batch.update.png</Icon>
-  <WebPage>https://github.com/tabilzad</WebPage>
-</Maintainer>
+  <WebPage>https://github.com/tabilzad/unraid-docker-batch-update</WebPage>
+</CommunityApplications>

@@ -20,7 +20,7 @@ jobs:
         run: find src -name '*.js' -print0 | xargs -0 -n1 node --check
 
       - name: Validate XML
-        run: xmllint --noout plugin/*.plg templates/*.xml ca_profile.xml
+        run: xmllint --noout plugin/*.plg plugins/*.xml ca_profile.xml
 
       - name: Package referenced by the .plg exists and its MD5 matches
         run: |

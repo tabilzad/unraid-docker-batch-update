@@ -58,7 +58,7 @@ src/usr/local/emhttp/plugins/docker.batch.update/
   images/docker.batch.update.png      plugin icon
   README.md                           text shown on the Plugins page
 archive/                              built packages, downloaded by the .plg
-templates/docker.batch.update.xml     Community Applications template
+plugins/docker.batch.update.xml       Community Applications plugin wrapper
 ca_profile.xml                        Community Applications maintainer profile
 build.sh                              builds archive/<name>-<version>-noarch-1.txz and stamps version + MD5 into the .plg
 dev-deploy.sh                         copies src/ into the running web UI for quick testing (RAM only)
