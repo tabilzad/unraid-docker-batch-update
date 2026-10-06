@@ -38,6 +38,9 @@ Then open **Docker → Batch Update**.
 
 Requires Unraid 7.0 or newer. Tested on 7.3.2.
 
+<img width="1004" height="900" alt="sample" src="https://github.com/user-attachments/assets/aa19fddd-f716-4bfb-8d75-4893f483bc48" />
+
+
 ## Tips
 
 - Updates run in the order shown. To update databases before the apps that use them, drag them higher on the Docker Containers page.
