@@ -4,7 +4,7 @@
   <Overview>Pick which Docker containers to update and update them in one go. Adds a "Batch Update" tab to the Docker page: tick the containers that have an update pending and they are updated one after another, in order, using Unraid's own update routine. Supports select all, a manual update check, and force-updating containers that are already current. Containers Unraid can't update itself (Docker Compose, no template) are shown greyed out with the reason.</Overview>
   <PluginURL>https://raw.githubusercontent.com/tabilzad/unraid-docker-batch-update/main/plugin/docker.batch.update.plg</PluginURL>
   <PluginAuthor>tabilzad</PluginAuthor>
-  <Support>https://github.com/tabilzad/unraid-docker-batch-update/issues</Support>
+  <Support>https://forums.unraid.net/topic/200997-plugin-docker-batch-update-update-only-the-containers-you-pick-in-one-go/</Support>
   <Project>https://github.com/tabilzad/unraid-docker-batch-update</Project>
   <ReadMe>https://raw.githubusercontent.com/tabilzad/unraid-docker-batch-update/main/README.md</ReadMe>
   <Category>Tools:Utilities</Category>
