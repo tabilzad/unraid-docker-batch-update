@@ -8,8 +8,16 @@ var dbu = {
   containers: [],
   selected: {},
 
+  // Stock webGUI colour classes for the update column, so the page follows the
+  // active theme (on 7.2+ these resolve to the theme's CSS variables).
+  updateClass: {available: 'orange-text', current: 'green-text', rebuild: 'orange-text', unknown: 'orange-text'},
+
+  // Safe in both text and attribute context. (jQuery's .text().html() trick
+  // leaves quotes alone, so it is not safe inside attributes.)
   esc: function(s) {
-    return $('<div>').text(s == null ? '' : String(s)).html();
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function(c) {
+      return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c];
+    });
   },
 
   load: function() {
@@ -48,9 +56,9 @@ var dbu = {
       var can = dbu.selectable(ct);
       var checked = can && dbu.selected[ct.name] ? ' checked' : '';
       var stateTxt = ct.paused ? dbuText.paused : (ct.running ? dbuText.running : dbuText.stopped);
-      var stateCls = ct.paused ? 'dbu-paused' : (ct.running ? 'dbu-running' : 'dbu-stopped');
-      var upd = ct.updatable ? (dbuText[ct.state] || ct.state) : ct.reason;
-      var updCls = ct.updatable ? 'dbu-' + ct.state : 'dbu-unsupported';
+      var stateCls = ct.paused ? 'orange-text' : (ct.running ? 'green-text' : 'red-text');
+      var upd = ct.updatable ? (dbuText[ct.state] || ct.state) : ((dbuText.reasons || {})[ct.reason] || ct.reason);
+      var updCls = ct.updatable ? 'dbu-' + ct.state + ' ' + (dbu.updateClass[ct.state] || '') : 'dbu-unsupported';
       var digest = ct.local ? dbu.esc(ct.local) + (ct.remote && ct.remote != ct.local ? ' &rarr; ' + dbu.esc(ct.remote) : '') : '';
       var icon = ct.icon ? '<img class="dbu-icon" src="' + dbu.esc(ct.icon) + '" onerror="this.style.visibility=\'hidden\'">' : '';
       n++;
@@ -58,7 +66,7 @@ var dbu = {
         '<tr class="' + (can ? '' : 'dbu-disabled') + '" data-name="' + dbu.esc(ct.name) + '">' +
         '<td class="dbu-check"><input type="checkbox" class="dbu-sel"' + checked + (can ? '' : ' disabled') + '></td>' +
         '<td class="dbu-order">' + n + '</td>' +
-        '<td class="dbu-name">' + icon + dbu.esc(ct.name) + (ct.autostart ? ' <i class="fa fa-play-circle-o dbu-auto" title="Autostart"></i>' : '') + '</td>' +
+        '<td class="dbu-name">' + icon + dbu.esc(ct.name) + (ct.autostart ? ' <i class="fa fa-play-circle-o dbu-auto" title="' + dbu.esc(dbuText.autostart) + '"></i>' : '') + '</td>' +
         '<td class="dbu-image">' + dbu.esc(ct.image) + '</td>' +
         '<td class="' + updCls + '">' + dbu.esc(upd) + '</td>' +
         '<td class="' + stateCls + '">' + dbu.esc(stateTxt) + '</td>' +
@@ -93,6 +101,7 @@ var dbu = {
   checkForUpdates: function() {
     $('#dbu-check, #dbu-update').prop('disabled', true);
     $('#dbu-summary').html('<i class="fa fa-refresh fa-spin"></i> ' + dbu.esc(dbuText.checking) + '...');
+    // Same endpoint as the stock "Check for Updates" button; it takes no parameters.
     $.post('/plugins/dynamix.docker.manager/include/DockerUpdate.php', {}).always(function() {
       $('#dbu-check').prop('disabled', false);
       dbu.load();
@@ -117,7 +126,8 @@ var dbu = {
           return;
         }
         $('#dbu-check, #dbu-update').prop('disabled', true);
-        // update_container takes a '*' separated, URI-encoded list and processes it sequentially.
+        // Same call as the stock "Update All" button: update_container takes a
+        // '*' separated, URI-encoded list and processes it sequentially.
         var arg = names.map(encodeURIComponent).join('*');
         openDocker('update_container ' + arg, dbuText.progressTitle, '', 'dbuAfterUpdate');
       });
@@ -125,7 +135,8 @@ var dbu = {
   }
 };
 
-// Called by the Unraid progress window once the update run has finished and been closed.
+// Called by the Unraid progress window (or, on 7.4+, the task tray) once the
+// update run has finished. Must stay a global function: it is looked up by name.
 function dbuAfterUpdate() {
   dbu.selected = {};
   $('#dbu-check').prop('disabled', false);
@@ -135,7 +146,7 @@ function dbuAfterUpdate() {
 
 $(function() {
   $('#dbu-list').on('change', 'input.dbu-sel', function() {
-    var name = $(this).closest('tr').data('name');
+    var name = $(this).closest('tr').attr('data-name');
     if (this.checked) dbu.selected[name] = true; else delete dbu.selected[name];
     dbu.refreshControls();
   });

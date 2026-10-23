@@ -18,11 +18,10 @@
 #dbu .dbu-disabled{opacity:.45}
 #dbu .dbu-disabled input{cursor:not-allowed}
 #dbu .dbu-empty{text-align:center;padding:16px}
-#dbu .dbu-available{color:#e68a00;font-weight:bold}
-#dbu .dbu-current,#dbu .dbu-running{color:#3ba33b}
-#dbu .dbu-stopped{color:#d9534f}
-#dbu .dbu-paused,#dbu .dbu-unknown,#dbu .dbu-unsupported{opacity:.8}
-#dbu .dbu-rebuild{color:#267ca8}
+/* Colours come from the stock green-text / orange-text / red-text classes so the
+   page follows the active theme; only emphasis is set here. */
+#dbu .dbu-available{font-weight:bold}
+#dbu .dbu-unknown,#dbu .dbu-unsupported{opacity:.8}
 #dbu .dbu-actions{margin-top:14px}
 #dbu .dbu-note{opacity:.7;font-size:.95em;max-width:900px}
 @media (max-width:768px){#dbu .dbu-digest,#dbu .dbu-order{display:none}}

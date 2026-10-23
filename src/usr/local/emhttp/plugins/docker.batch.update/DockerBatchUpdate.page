@@ -19,6 +19,7 @@ Markdown="false"
     <label class="dbu-toggle"><input type="checkbox" id="dbu-showall"> _(Show all containers)_</label>
   </div>
 
+  <div class="TableContainer--no-min-width">
   <table class="dbu-table" id="dbu-table">
     <thead>
       <tr>
@@ -33,6 +34,7 @@ Markdown="false"
     </thead>
     <tbody id="dbu-list"><tr><td colspan="7" class="dbu-empty"><i class="fa fa-spinner fa-spin"></i> _(Loading)_...</td></tr></tbody>
   </table>
+  </div>
 
   <div class="dbu-actions">
     <input type="button" id="dbu-check" value="_(Check for Updates)_">
@@ -53,6 +55,7 @@ var dbuText = {
   running: "_(Started)_",
   stopped: "_(Stopped)_",
   paused: "_(Paused)_",
+  autostart: "_(Autostart)_",
   none: "_(No containers have an update available)_",
   noContainers: "_(No containers found)_",
   summary: "_(containers with an update available)_",
@@ -65,7 +68,12 @@ var dbuText = {
   progressTitle: "_(Updating selected containers)_",
   checking: "_(Checking for updates)_",
   busy: "_(An update is already running. Wait for it to finish and try again)_",
-  error: "_(Could not load the container list)_"
+  error: "_(Could not load the container list)_",
+  reasons: {
+    compose: "_(Managed by Docker Compose)_",
+    unmanaged: "_(Not managed by Unraid)_",
+    notemplate: "_(No Unraid template found)_"
+  }
 };
 </script>
 <script src="<?autov('/plugins/docker.batch.update/javascript/batch.js')?>"></script>

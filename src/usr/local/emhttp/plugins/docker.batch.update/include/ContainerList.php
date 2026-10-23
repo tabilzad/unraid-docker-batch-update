@@ -5,7 +5,8 @@
  * in the same order as the Docker Containers page, together with its update
  * state as recorded by the stock dockerMan update check.
  *
- * Read-only: this endpoint never changes anything.
+ * Read-only: this endpoint never changes anything. It is fetched with GET and
+ * is protected by the normal webGUI login like every other plugin include.
  */
 $docroot ??= ($_SERVER['DOCUMENT_ROOT'] ?: '/usr/local/emhttp');
 require_once "$docroot/webGui/include/Helpers.php";
@@ -58,13 +59,14 @@ foreach ($containers as $ct) {
 
   // update_container can only handle containers that have a user template
   // (i.e. were created by the Unraid Docker manager, not compose etc).
+  // 'reason' is a code; the page translates it for display.
   $manager   = $ct['Manager'] ?: 'unmanaged';
   $template  = $info['template'] ?? '';
   $updatable = $manager === 'dockerman' && !empty($template);
   $reason    = '';
-  if ($manager === 'composeman') $reason = 'Managed by Docker Compose';
-  elseif ($manager !== 'dockerman') $reason = 'Not managed by Unraid';
-  elseif (empty($template)) $reason = 'No Unraid template found';
+  if ($manager === 'composeman') $reason = 'compose';
+  elseif ($manager !== 'dockerman') $reason = 'unmanaged';
+  elseif (empty($template)) $reason = 'notemplate';
 
   $list[] = [
     'name'      => $name,
@@ -81,4 +83,11 @@ foreach ($containers as $ct) {
   ];
 }
 
-echo json_encode(['containers' => $list]);
+// Never emit a half-written body: on an encoding problem (e.g. a stray byte in
+// a container label) report it as an error instead of an empty response.
+$json = json_encode(['containers' => $list], JSON_INVALID_UTF8_SUBSTITUTE);
+if ($json === false) {
+  http_response_code(500);
+  $json = json_encode(['error' => json_last_error_msg()]);
+}
+echo $json;
