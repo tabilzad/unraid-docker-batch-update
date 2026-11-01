@@ -19,7 +19,7 @@
         version="&version;"
         launch="&launch;"
         pluginURL="&pluginURL;"
-        support="https://github.com/&repo;/issues"
+        support="https://forums.unraid.net/topic/200997-plugin-docker-batch-update-update-only-the-containers-you-pick-in-one-go/"
         icon="&name;.png"
         min="7.0.0">
 
