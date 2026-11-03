@@ -6,13 +6,16 @@ Unraid's Docker page has **Update All**, or you can update containers one at a t
 
 ## Features
 
-- Lists every container that has an update pending, in the same order as the Docker Containers page
-- Checkboxes, plus select all / none
+- Lists every container in the same order as the Docker Containers page, under a status strip: updates available, how many you picked, when the last update check ran, and whether an update is already running
+- Views for **updates available**, **all** and **running** containers, plus a filter by name or image
+- Checkboxes with select all, and shift-click to pick a range
 - Shows the current and new image digests
 - **Check for Updates** button, which runs the stock Unraid update check
-- **Show all containers** lets you force-update containers that are already up to date
+- The **All** view lets you force-update containers that are already up to date
+- The confirmation step lists the run order; drag a row or use the arrows to change it for that run
+- While the run executes, each row shows queued, updating, updated or not updated, and a summary reports the outcome at the end
 - Greys out containers Unraid can't update itself (Docker Compose, containers without an Unraid template), and says why
-- Won't start if another container update is already running
+- Won't start if another container update is already running, and shows when one was started from the Containers tab
 
 ## How it works
 
@@ -38,13 +41,14 @@ Then open **Docker → Batch Update**.
 
 Requires Unraid 7.0 or newer. Tested on 7.3.2.
 
-<img width="1004" height="900" alt="sample" src="https://github.com/user-attachments/assets/aa19fddd-f716-4bfb-8d75-4893f483bc48" />
+![The Batch Update tab with three containers selected](https://raw.githubusercontent.com/tabilzad/unraid-docker-batch-update/main/docs/screenshots/overview.png)
 
+![A run in progress: one container updated, one updating, one queued](https://raw.githubusercontent.com/tabilzad/unraid-docker-batch-update/main/docs/screenshots/run-progress.png)
 
 ## Tips
 
-- Updates run in the order shown. To update databases before the apps that use them, drag them higher on the Docker Containers page.
-- You can close the progress window. The update keeps going in the background, just like **Update All**.
+- Updates run in the order shown, which is the Docker Containers page order. To update a database before the apps that use it, move it up in the confirmation step for that run, or drag it higher on the Docker Containers page to change the order for good.
+- You can close the progress window. The update keeps going in the background, just like **Update All**, and the Batch Update tab keeps showing each container's progress until the run ends.
 
 ## Development
 
@@ -58,6 +62,7 @@ src/usr/local/emhttp/plugins/docker.batch.update/
   images/docker.batch.update.png      plugin icon
   README.md                           text shown on the Plugins page
 archive/                              built packages, downloaded by the .plg
+docs/screenshots/                     screenshots used by this README and pull requests
 plugins/docker.batch.update.xml       Community Applications plugin wrapper
 ca_profile.xml                        Community Applications maintainer profile
 build.sh                              builds archive/<name>-<version>-noarch-1.txz and stamps version + MD5 into the .plg
