@@ -70,6 +70,9 @@ foreach ($containers as $ct) {
 
   $list[] = [
     'name'      => $name,
+    // Docker assigns a new ID when a container is recreated, so the page uses
+    // it to tell which containers an update run has actually replaced.
+    'id'        => (string)($ct['Id'] ?? ''),
     'image'     => $image,
     'icon'      => $info['icon'] ?? '',
     'running'   => (bool)$ct['Running'],
@@ -85,7 +88,16 @@ foreach ($containers as $ct) {
 
 // Never emit a half-written body: on an encoding problem (e.g. a stray byte in
 // a container label) report it as an error instead of an empty response.
-$json = json_encode(['containers' => $list], JSON_INVALID_UTF8_SUBSTITUTE);
+// When the stock update check last ran: the status file is rewritten by every
+// check. 0 means it has never run. 'now' lets the page show a relative time
+// without depending on the browser clock.
+$checked = is_file($dockerManPaths['update-status']) ? (int)@filemtime($dockerManPaths['update-status']) : 0;
+
+$json = json_encode([
+  'containers' => $list,
+  'checked_at' => $checked,
+  'now'        => time(),
+], JSON_INVALID_UTF8_SUBSTITUTE);
 if ($json === false) {
   http_response_code(500);
   $json = json_encode(['error' => json_last_error_msg()]);
