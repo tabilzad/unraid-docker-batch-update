@@ -1,0 +1,14 @@
+# Everything that ships to an Unraid server must have LF line endings: the
+# webGUI reads .page headers line by line and a trailing CR hides the tab.
+# This pins the checkout to LF on every platform, whatever core.autocrlf says.
+* text=auto eol=lf
+*.sh text eol=lf
+*.page text eol=lf
+*.php text eol=lf
+*.js text eol=lf
+*.css text eol=lf
+*.plg text eol=lf
+*.xml text eol=lf
+*.md text eol=lf
+*.png binary
+*.txz binary

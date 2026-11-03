@@ -2,8 +2,8 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "docker.batch.update">
 <!ENTITY author    "tabilzad">
-<!ENTITY version   "2026.11.02">
-<!ENTITY md5       "63d41459c28d562f5736059b2eab6f8e">
+<!ENTITY version   "2026.11.03">
+<!ENTITY md5       "9df3000496748db401b00a08bf467b62">
 <!ENTITY launch    "Docker">
 <!ENTITY repo      "tabilzad/unraid-docker-batch-update">
 <!ENTITY branch    "main">
@@ -24,6 +24,8 @@
         min="7.0.0">
 
 <CHANGES>
+###2026.11.03
+- Fix: the Batch Update tab was missing after updating to 2026.11.02. That package was built from a Windows checkout and its files had CRLF line endings, which the webGUI page loader does not accept. No other change.
 ###2026.11.02
 - Redesigned Batch Update tab: status strip (updates available, selected, last check, updater state), views for updates available / all / running, and a filter by name or image
 - Shift-click selects a range; the confirmation step shows the run order and lets you reorder it by dragging or with arrows
