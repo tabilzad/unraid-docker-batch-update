@@ -1,28 +1,787 @@
-#dbu .dbu-toolbar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin:8px 0 12px}
-#dbu .dbu-summary{font-weight:bold}
-#dbu .dbu-toggle{cursor:pointer;white-space:nowrap}
-#dbu .dbu-toggle input{display:inline;width:auto;height:auto;margin:0 4px 0 0;vertical-align:middle}
-#dbu .dbu-table{width:100%;border-collapse:collapse}
-#dbu .dbu-table th{text-align:left;padding:6px 8px;border-bottom:2px solid rgba(128,128,128,.4);white-space:nowrap}
-#dbu .dbu-table td{padding:6px 8px;border-bottom:1px solid rgba(128,128,128,.2);vertical-align:middle}
-#dbu .dbu-table tbody tr:not(.dbu-disabled){cursor:pointer}
-#dbu .dbu-table tbody tr:not(.dbu-disabled):hover{background:rgba(128,128,128,.12)}
-#dbu .dbu-table input[type=checkbox]{display:inline;width:auto;height:auto;margin:0;cursor:pointer}
-#dbu .dbu-check{width:28px;text-align:center}
-#dbu .dbu-order{width:32px;opacity:.6}
-#dbu .dbu-name{font-weight:bold;white-space:nowrap}
-#dbu .dbu-icon{width:24px;height:24px;margin-right:8px;vertical-align:middle;border-radius:4px}
-#dbu .dbu-auto{opacity:.5}
-#dbu .dbu-image{word-break:break-all}
-#dbu .dbu-digest{font-family:monospace;font-size:.95em;white-space:nowrap;opacity:.8}
-#dbu .dbu-disabled{opacity:.45}
-#dbu .dbu-disabled input{cursor:not-allowed}
-#dbu .dbu-empty{text-align:center;padding:16px}
-/* Colours come from the stock green-text / orange-text / red-text classes so the
-   page follows the active theme; only emphasis is set here. */
-#dbu .dbu-available{font-weight:bold}
-#dbu .dbu-unknown,#dbu .dbu-unsupported{opacity:.8}
-#dbu .dbu-actions{margin-top:14px}
-#dbu .dbu-note{opacity:.7;font-size:.95em;max-width:900px}
-@media (max-width:768px){#dbu .dbu-digest,#dbu .dbu-order{display:none}}
-ol.dbu-confirm{text-align:left;max-height:240px;overflow:auto;margin:10px auto 0;padding-left:28px;display:inline-block}
+/* Docker Batch Update: page styles.
+ *
+ * Every rule is scoped to .dbu (or .dbu-confirm inside the confirmation
+ * dialog) so nothing leaks into the rest of the webGUI. Colours come from
+ * Unraid's own theme variables (7.1 and newer) and fall back to the native
+ * 7.0 theme colours keyed by the data-theme attribute the page sets: black
+ * (the base), white, azure, gray. Buttons stay stock so they match the
+ * Docker Containers tab next door.
+ */
+
+.dbu {
+  --dbu-native-bg: #1c1b1b;
+  --dbu-native-panel: #262626;
+  --dbu-native-table: #191818;
+  --dbu-native-text: #f2f2f2;
+  --dbu-native-muted: #808080;
+  --dbu-native-border: #404040;
+  --dbu-native-link: #486dba;
+  --dbu-bg: var(--background-color, var(--dbu-native-bg));
+  --dbu-panel: var(--mild-background-color, var(--dbu-native-panel));
+  --dbu-panel-2: var(--table-background-color, var(--dbu-native-table));
+  --dbu-text: var(--text-color, var(--dbu-native-text));
+  --dbu-muted: var(--alt-text-color, var(--dbu-native-muted));
+  --dbu-border: var(--table-border-color, var(--dbu-native-border));
+  --dbu-border-strong: var(--border-color, var(--dbu-native-border));
+  --dbu-accent: var(--brand-orange, var(--button-text-color, #ff8c2f));
+  --dbu-link: var(--link-text-color, var(--dbu-native-link));
+  --dbu-row-hover: var(--hover-table-row-background-color, rgba(255, 255, 255, 0.05));
+  --dbu-shadow: rgba(0, 0, 0, 0.28);
+  --dbu-ok: #67d867;
+  --dbu-ok-soft: rgba(51, 204, 51, 0.14);
+  --dbu-warn: #ffbf54;
+  --dbu-warn-soft: rgba(255, 153, 0, 0.14);
+  --dbu-bad: #ff9e9e;
+  --dbu-bad-soft: rgba(226, 40, 40, 0.16);
+  --dbu-info: #75bfff;
+  --dbu-info-soft: rgba(0, 136, 204, 0.14);
+  --dbu-neutral: var(--dbu-muted);
+  --dbu-neutral-soft: rgba(128, 128, 128, 0.18);
+  --dbu-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  color: var(--dbu-text);
+  margin: 0 0 14px;
+}
+
+.dbu[data-theme="white"] {
+  --dbu-native-bg: #f2f2f2;
+  --dbu-native-panel: #f7f9f9;
+  --dbu-native-table: #f5f5f5;
+  --dbu-native-text: #1c1b1b;
+  --dbu-native-muted: #808080;
+  --dbu-native-border: #d3d3d3;
+}
+
+.dbu[data-theme="azure"] {
+  --dbu-native-bg: #e4e2e4;
+  --dbu-native-panel: #edeaef;
+  --dbu-native-table: #edeaef;
+  --dbu-native-text: #606e7f;
+  --dbu-native-muted: #9794a0;
+  --dbu-native-border: #c9c5cc;
+}
+
+.dbu[data-theme="gray"] {
+  --dbu-native-bg: #1b1d1b;
+  --dbu-native-panel: #121510;
+  --dbu-native-table: #121510;
+  --dbu-native-text: #a3a8a3;
+  --dbu-native-muted: #82857e;
+  --dbu-native-border: #3a3f3a;
+}
+
+.dbu[data-theme="white"],
+.dbu[data-theme="azure"] {
+  --dbu-row-hover: var(--hover-table-row-background-color, rgba(0, 0, 0, 0.05));
+  --dbu-shadow: rgba(0, 0, 0, 0.1);
+  --dbu-ok: #2f7d12;
+  --dbu-warn: #8a5a00;
+  --dbu-bad: #b42318;
+  --dbu-info: #0b6bb0;
+  --dbu-neutral-soft: rgba(0, 0, 0, 0.07);
+}
+
+.dbu,
+.dbu * {
+  box-sizing: border-box;
+}
+
+.dbu-hidden {
+  display: none !important;
+}
+
+.dbu-muted {
+  color: var(--dbu-muted);
+}
+
+.dbu-link {
+  color: var(--dbu-link);
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.dbu-link:hover {
+  text-decoration: underline;
+}
+
+/* Header */
+
+.dbu-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px 12px;
+  margin-bottom: 12px;
+}
+
+.dbu-head-copy {
+  flex: 1 1 320px;
+  min-width: 0;
+}
+
+.dbu-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  color: var(--dbu-text);
+}
+
+.dbu-title .fa {
+  font-size: 16px;
+  color: var(--dbu-accent);
+}
+
+.dbu-desc {
+  max-width: 760px;
+  margin: 3px 0 0;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--dbu-muted);
+}
+
+.dbu-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.dbu-toolbar input[type=button],
+.dbu-actions input[type=button] {
+  margin: 0;
+}
+
+/* Summary cards */
+
+.dbu-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 8px;
+}
+
+.dbu-card {
+  position: relative;
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  min-height: 82px;
+  padding: 10px 12px;
+  border: 1px solid var(--dbu-border);
+  border-radius: 12px;
+  background: var(--dbu-panel);
+}
+
+.dbu-card::before {
+  content: "";
+  position: absolute;
+  top: 11px;
+  right: 11px;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--dbu-border-strong);
+}
+
+.dbu-card[data-tone="ok"]::before { background: var(--dbu-ok); }
+.dbu-card[data-tone="warn"]::before { background: var(--dbu-warn); }
+.dbu-card[data-tone="bad"]::before { background: var(--dbu-bad); }
+.dbu-card[data-tone="info"]::before { background: var(--dbu-info); }
+
+.dbu-card-label {
+  padding-right: 18px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dbu-muted);
+}
+
+.dbu-card-value {
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--dbu-text);
+  overflow-wrap: anywhere;
+}
+
+.dbu-card-sub {
+  min-height: 14px;
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--dbu-muted);
+  overflow-wrap: anywhere;
+}
+
+/* Badges, tags and state dots */
+
+.dbu-badge,
+.dbu-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 18px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: var(--dbu-neutral-soft);
+  color: var(--dbu-neutral);
+  line-height: 1;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.dbu-badge {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dbu-tag {
+  font-family: var(--dbu-mono);
+  font-size: 11px;
+  font-weight: 600;
+  min-height: 20px;
+}
+
+.dbu-badge .fa,
+.dbu-tag .fa {
+  font-size: 10px;
+}
+
+.dbu-badge[data-tone="ok"],
+.dbu-tag[data-tone="ok"] { background: var(--dbu-ok-soft); color: var(--dbu-ok); }
+.dbu-badge[data-tone="warn"],
+.dbu-tag[data-tone="warn"] { background: var(--dbu-warn-soft); color: var(--dbu-warn); }
+.dbu-badge[data-tone="bad"],
+.dbu-tag[data-tone="bad"] { background: var(--dbu-bad-soft); color: var(--dbu-bad); }
+.dbu-badge[data-tone="info"],
+.dbu-tag[data-tone="info"] { background: var(--dbu-info-soft); color: var(--dbu-info); }
+
+.dbu-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: 7px;
+  border-radius: 999px;
+  background: var(--dbu-neutral);
+  vertical-align: 0;
+}
+
+.dbu-dot[data-tone="ok"] { background: var(--dbu-ok); }
+.dbu-dot[data-tone="warn"] { background: var(--dbu-warn); }
+.dbu-dot[data-tone="bad"] { background: var(--dbu-bad); }
+
+/* Result of the last run */
+
+.dbu-result {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 10px 0 0;
+  padding: 10px 12px;
+  border: 1px solid var(--dbu-border);
+  border-left: 3px solid var(--dbu-ok);
+  border-radius: 10px;
+  background: var(--dbu-panel);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.dbu-result[data-tone="warn"] { border-left-color: var(--dbu-warn); }
+.dbu-result[data-tone="bad"] { border-left-color: var(--dbu-bad); }
+
+.dbu-result-icon {
+  margin-top: 2px;
+  font-size: 15px;
+  color: var(--dbu-ok);
+}
+
+.dbu-result[data-tone="warn"] .dbu-result-icon { color: var(--dbu-warn); }
+.dbu-result[data-tone="bad"] .dbu-result-icon { color: var(--dbu-bad); }
+
+.dbu-result-body {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.dbu-result-title {
+  font-weight: 700;
+  color: var(--dbu-text);
+}
+
+.dbu-result-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+  margin-top: 6px;
+}
+
+.dbu-result-hint {
+  margin-top: 6px;
+  color: var(--dbu-muted);
+}
+
+.dbu-result .dbu-link {
+  margin-left: auto;
+}
+
+/* Filters */
+
+.dbu-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  margin: 12px 0 8px;
+}
+
+.dbu-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* Unraid styles every button with a gradient border and uppercase text;
+   .dbu .dbu-chip outranks those rules and starts from a quiet outline. */
+.dbu .dbu-chip,
+.dbu .dbu-chip:hover,
+.dbu .dbu-chip:active,
+.dbu .dbu-chip:focus {
+  appearance: none;
+  -webkit-appearance: none;
+  box-shadow: none;
+  text-shadow: none;
+  transform: none;
+  background-image: none;
+}
+
+.dbu .dbu-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 28px;
+  min-width: 0;
+  margin: 0;
+  padding: 0 11px;
+  border: 1px solid var(--dbu-border-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--dbu-muted);
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  text-transform: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.dbu .dbu-chip:hover {
+  border-color: var(--dbu-accent);
+  color: var(--dbu-text);
+  background: var(--dbu-panel);
+}
+
+.dbu .dbu-chip:focus-visible {
+  outline: 2px solid var(--dbu-link);
+  outline-offset: 2px;
+}
+
+.dbu .dbu-chip-on,
+.dbu .dbu-chip-on:hover {
+  border-color: var(--dbu-accent);
+  color: var(--dbu-text);
+  background: var(--dbu-panel);
+}
+
+.dbu-chip-n {
+  display: inline-block;
+  min-width: 18px;
+  padding: 2px 5px;
+  border-radius: 999px;
+  background: var(--dbu-neutral-soft);
+  font-size: 10px;
+  text-align: center;
+}
+
+.dbu .dbu-chip-on .dbu-chip-n {
+  background: var(--dbu-accent);
+  color: #fff;
+}
+
+.dbu-search {
+  position: relative;
+  flex: 0 1 280px;
+  min-width: 180px;
+  margin: 0;
+}
+
+.dbu-search .fa {
+  position: absolute;
+  top: 50%;
+  left: 11px;
+  transform: translateY(-50%);
+  font-size: 12px;
+  color: var(--dbu-muted);
+  pointer-events: none;
+}
+
+.dbu .dbu-search input[type=search] {
+  width: 100%;
+  min-height: 30px;
+  margin: 0;
+  padding: 5px 10px 5px 30px;
+  border: 1px solid var(--dbu-border-strong);
+  border-radius: 999px;
+  background: var(--dbu-panel-2);
+  color: var(--dbu-text);
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 1.3;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.dbu .dbu-search input[type=search]:focus {
+  outline: none;
+  border-color: var(--dbu-accent);
+}
+
+/* Table */
+
+.dbu table.dbu-table {
+  width: 100%;
+  margin: 0;
+  border-collapse: collapse;
+  border-style: none;
+  background: transparent;
+  font-size: 13px;
+}
+
+.dbu .dbu-table th {
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--dbu-border);
+  background: transparent;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--dbu-muted);
+}
+
+.dbu .dbu-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--dbu-border);
+  background: transparent;
+  vertical-align: middle;
+  color: var(--dbu-text);
+}
+
+.dbu .dbu-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.dbu .dbu-row {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.dbu .dbu-row:hover td {
+  background: var(--dbu-row-hover);
+}
+
+.dbu .dbu-row.dbu-on td {
+  background: var(--dbu-info-soft);
+}
+
+.dbu .dbu-row.dbu-disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.dbu .dbu-row.dbu-disabled:hover td {
+  background: transparent;
+}
+
+.dbu-locked .dbu-row {
+  cursor: default;
+}
+
+.dbu .dbu-table input[type=checkbox] {
+  display: inline;
+  width: auto;
+  height: auto;
+  margin: 0;
+  cursor: pointer;
+}
+
+.dbu .dbu-table input[type=checkbox][disabled] {
+  cursor: default;
+}
+
+.dbu .dbu-check {
+  width: 34px;
+  text-align: center;
+}
+
+.dbu .dbu-order {
+  width: 32px;
+  color: var(--dbu-muted);
+}
+
+.dbu .dbu-name {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.dbu-icon {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  margin-right: 8px;
+  border-radius: 5px;
+  vertical-align: middle;
+}
+
+.dbu-icon-empty {
+  background: var(--dbu-neutral-soft);
+}
+
+.dbu-name-text {
+  vertical-align: middle;
+}
+
+.dbu-auto {
+  margin-left: 6px;
+  opacity: 0.5;
+  vertical-align: middle;
+}
+
+.dbu .dbu-image {
+  font-family: var(--dbu-mono);
+  font-size: 11.5px;
+  color: var(--dbu-muted);
+  word-break: break-all;
+}
+
+.dbu .dbu-state {
+  white-space: nowrap;
+}
+
+.dbu .dbu-digest {
+  font-family: var(--dbu-mono);
+  font-size: 11px;
+  color: var(--dbu-muted);
+  white-space: nowrap;
+}
+
+.dbu-arrow {
+  opacity: 0.6;
+}
+
+.dbu .dbu-loading {
+  padding: 18px;
+  text-align: center;
+  color: var(--dbu-muted);
+}
+
+.dbu .dbu-error {
+  color: var(--dbu-bad);
+}
+
+/* Empty state */
+
+.dbu-empty {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 22px 14px;
+  border-radius: 12px;
+  background: var(--dbu-panel);
+  text-align: center;
+}
+
+.dbu-empty .fa {
+  margin-bottom: 4px;
+  font-size: 22px;
+  color: var(--dbu-muted);
+}
+
+.dbu-empty-title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--dbu-text);
+}
+
+.dbu-empty-msg {
+  max-width: 560px;
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--dbu-muted);
+}
+
+.dbu-empty .dbu-link {
+  margin-top: 6px;
+}
+
+/* Action bar: sticks to the bottom so the primary action stays in reach on
+   long lists. The stock footer is a fixed 30px bar on desktop widths, so the
+   bar stops just above it there. */
+
+.dbu-actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  margin-top: 10px;
+  padding: 8px 12px;
+  border: 1px solid var(--dbu-border);
+  border-radius: 12px;
+  background: var(--dbu-panel);
+  box-shadow: 0 -6px 18px var(--dbu-shadow);
+}
+
+.dbu-actions-info {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--dbu-muted);
+}
+
+.dbu-actions-buttons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+}
+
+/* Confirmation dialog: lives inside SweetAlert, outside .dbu */
+
+.dbu-confirm-text {
+  margin: 0 0 8px;
+  font-size: 13px;
+}
+
+ol.dbu-confirm {
+  max-width: 440px;
+  max-height: 260px;
+  margin: 0 auto;
+  padding: 0 2px;
+  overflow: auto;
+  list-style: none;
+  counter-reset: dbu;
+  text-align: left;
+}
+
+ol.dbu-confirm li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0;
+  padding: 6px 8px;
+  border: 1px solid rgba(128, 128, 128, 0.35);
+  border-radius: 8px;
+  background: rgba(128, 128, 128, 0.08);
+  font-size: 13px;
+  counter-increment: dbu;
+}
+
+ol.dbu-confirm li::before {
+  content: counter(dbu);
+  min-width: 18px;
+  font-size: 12px;
+  font-weight: 700;
+  opacity: 0.6;
+}
+
+ol.dbu-confirm li.ui-sortable-helper {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+}
+
+.dbu-grip {
+  opacity: 0.5;
+  cursor: grab;
+}
+
+.dbu-confirm-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dbu-confirm-mv {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.dbu-confirm-mv a {
+  padding: 2px 6px;
+  opacity: 0.7;
+  cursor: pointer;
+}
+
+.dbu-confirm-mv a:hover {
+  opacity: 1;
+}
+
+/* Same conditions under which the stock footer is fixed. */
+@media (min-width: 768px), (min-height: 500px) and (orientation: landscape) {
+  .dbu-actions {
+    bottom: 34px;
+  }
+}
+
+/* Narrow screens */
+
+@media (max-width: 760px) {
+  .dbu-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dbu-search {
+    flex-basis: 100%;
+  }
+
+  .dbu .dbu-table th,
+  .dbu .dbu-table td {
+    padding: 6px;
+  }
+
+  /* Name, update state and run state are what matters on a phone. */
+  .dbu .dbu-digest,
+  .dbu .dbu-order,
+  .dbu .dbu-image {
+    display: none;
+  }
+
+  .dbu .dbu-name {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .dbu-actions {
+    padding: 8px 10px;
+  }
+}
