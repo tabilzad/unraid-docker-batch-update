@@ -2,8 +2,8 @@
 <!DOCTYPE PLUGIN [
 <!ENTITY name      "docker.batch.update">
 <!ENTITY author    "tabilzad">
-<!ENTITY version   "2026.10.06">
-<!ENTITY md5       "ff5caa22efa9a196015558edb7d53805">
+<!ENTITY version   "2026.11.02">
+<!ENTITY md5       "63d41459c28d562f5736059b2eab6f8e">
 <!ENTITY launch    "Docker">
 <!ENTITY repo      "tabilzad/unraid-docker-batch-update">
 <!ENTITY branch    "main">
@@ -24,6 +24,13 @@
         min="7.0.0">
 
 <CHANGES>
+###2026.11.02
+- Redesigned Batch Update tab: status strip (updates available, selected, last check, updater state), views for updates available / all / running, and a filter by name or image
+- Shift-click selects a range; the confirmation step shows the run order and lets you reorder it by dragging or with arrows
+- Live progress per container while the run executes (queued, updating, updated, not updated) and a summary when it finishes
+- Shows when an update was started from the Containers tab instead of failing later
+- Colours follow the Unraid theme (7.2+ theme variables, 7.0 fallbacks); works on narrow screens
+- All strings translatable; attribute-safe escaping; clearer error when the container list cannot be loaded
 ###2026.10.06
 - Initial release
 - New "Batch Update" tab on the Docker page
